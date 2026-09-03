@@ -45,6 +45,8 @@ core/src/
 | LLM | Google Gemini `gemini-2.5-flash` | Genuine free tier, generous tokens-per-minute, native JSON output, single API key, no card required. |
 | Web search | DuckDuckGo HTML endpoint (`html.duckduckgo.com`) | No API key needed on any free tier. Plain queries (`<company> interview process`), a reddit-scoped fallback, results re-ranked so first-hand candidate discussion (reddit / glassdoor / blind / levels.fyi / HN) leads. A desktop UA is sent for these requests only — the endpoint returns an empty page to bot UAs; the use is read-only. Degrades to an empty result set (never fatal). |
 | DB | MongoDB via Mongoose | Per the preferred stack. Kit is a document; fits the nested Appendix A shape directly. |
+| LLM output contract | `responseMimeType: application/json` + our own Zod validate & repair (no `responseSchema`) | Gemini's `responseSchema` supports only an OpenAPI subset and couples every prompt to a converter. Validating ourselves with one corrective retry is more robust and keeps the schema single-sourced. |
+| LLM pacing | Shared client-side RPM **and** TPM budget (rolling 60s window) + retry with server `retryDelay` | The brief warns free tiers cap tokens-per-minute, not just requests. One budget across the whole run so every step slows together. |
 | Auth | _TBD_ | Minimal per brief. Leaning JWT in an httpOnly cookie. |
 
 ### Deterministic, never handed to the model

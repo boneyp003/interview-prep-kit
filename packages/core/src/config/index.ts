@@ -10,6 +10,10 @@ export interface CoreConfig {
   gemini: {
     apiKey: string;
     model: string;
+    /** Client-side pacing so we stay under the free-tier limits. */
+    requestsPerMinute: number;
+    tokensPerMinute: number;
+    maxRetries: number;
   };
   retrieval: {
     blockPrivateAddresses: boolean;
@@ -37,6 +41,9 @@ export function loadCoreConfig(env: NodeJS.ProcessEnv = process.env): CoreConfig
     gemini: {
       apiKey: env.GEMINI_API_KEY ?? "",
       model: env.GEMINI_MODEL?.trim() || "gemini-2.5-flash",
+      requestsPerMinute: num(env.GEMINI_RPM, 10),
+      tokensPerMinute: num(env.GEMINI_TPM, 250_000),
+      maxRetries: num(env.GEMINI_MAX_RETRIES, 5),
     },
     retrieval: {
       blockPrivateAddresses: bool(env.BLOCK_PRIVATE_ADDRESSES, true),

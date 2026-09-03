@@ -99,6 +99,11 @@ export const kitSchema = z.object({
 });
 
 export type Kit = z.infer<typeof kitSchema>;
+export type Source = z.infer<typeof sourceSchema>;
+export type CompanyBrief = z.infer<typeof companyBriefSchema>;
+export type Role = z.infer<typeof roleSchema>;
+export type Schedule = z.infer<typeof scheduleSchema>;
+export type Coverage = z.infer<typeof coverageSchema>;
 export type Requirement = z.infer<typeof requirementSchema>;
 export type Question = z.infer<typeof questionSchema>;
 export type Flashcard = z.infer<typeof flashcardSchema>;
