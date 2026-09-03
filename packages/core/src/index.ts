@@ -22,3 +22,5 @@ export { createRetrieval } from "./retrieval/index.js";
 export { createLlm, LlmClient, LlmError } from "./generation/llm/index.js";
 export { checkCoverage } from "./coverage/index.js";
 export { buildSchedule } from "./scheduling/index.js";
+export * from "./builder/state.js";
+export { IdAllocator } from "./util/ids.js";

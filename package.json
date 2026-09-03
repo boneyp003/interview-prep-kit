@@ -13,7 +13,9 @@
     "dev": "npm-run-all --parallel dev:api dev:web",
     "dev:api": "npm run -w @ipk/api dev",
     "dev:web": "npm run -w @ipk/web dev",
-    "test": "npm run -w @ipk/core test",
+    "test": "npm run -w @ipk/core test && npm run -w @ipk/api test",
+    "test:core": "npm run -w @ipk/core test",
+    "test:api": "npm run -w @ipk/api test",
     "typecheck": "npm run -w @ipk/core typecheck && npm run -w @ipk/api typecheck && npm run -w @ipk/web typecheck",
     "build": "npm run -w @ipk/core build && npm run -w @ipk/api build && npm run -w @ipk/web build"
   },
