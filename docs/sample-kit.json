@@ -1,0 +1,436 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-09-03T02:27:23.584Z",
+  "kits": [
+    {
+      "id": "posthog-be",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "PostHog",
+          "company_url": "https://posthog.com/",
+          "role": "Senior Backend Engineer",
+          "location": "",
+          "jd_chars": 353,
+          "pages_used": [
+            "https://posthog.com/",
+            "https://posthog.com/handbook",
+            "https://posthog.com/handbook/people/hiring-process",
+            "https://posthog.com/handbook/company/culture",
+            "https://posthog.com/handbook/why-does-posthog-exist",
+            "https://posthog.com/handbook/product/product-team",
+            "https://posthog.com/handbook/story",
+            "https://posthog.com/handbook/wide-company",
+            "https://posthog.com/about",
+            "https://posthog.com/careers",
+            "https://posthog.com/handbook/people/share-options",
+            "https://posthog.com/handbook/company/small-teams",
+            "https://www.glassdoor.com/Interview/PostHog-Interview-Questions-E4260520.htm",
+            "https://posthog.com/handbook/people/hiring-process/how-to-interview",
+            "https://www.techinterview.org/companies/posthog-interview-guide/",
+            "https://posthog.com/handbook/people/hiring-process/engineering-hiring",
+            "https://www.glassdoor.co.in/Interview/PostHog-Interview-Questions-E4260520.htm",
+            "https://posthog.com/handbook/people/hiring-process/operations-hiring",
+            "https://posthog.com/handbook/people/hiring-process/design-hiring"
+          ],
+          "researched_at": "2026-09-03T02:27:23.582Z"
+        },
+        "company_brief": {
+          "summary": "PostHog is an open-source product and data platform used by over 500,000 teams. Hatched in Y Combinator's W20 batch, the company operates as a 100% remote team distributed across more than 20 countries. For candidates, PostHog emphasizes extreme transparency (making its handbook, roadmap, and compensation public), a fast-paced environment structured around small teams, and an inbound-led, product-led growth model.",
+          "what_they_do": "PostHog provides a single platform for engineers to analyze, test, observe, and deploy new features, featuring tools like product analytics, session replay, feature flags, experiments, error tracking, and a context warehouse that combines data from over 120 sources.",
+          "sources": [
+            "https://posthog.com/",
+            "https://posthog.com/about",
+            "https://posthog.com/handbook",
+            "https://posthog.com/handbook/people/hiring-process",
+            "https://posthog.com/handbook/company/culture",
+            "https://posthog.com/handbook/why-does-posthog-exist"
+          ]
+        },
+        "role": {
+          "title": "Senior Backend Engineer",
+          "seniority": "Senior",
+          "responsibilities": [
+            "Build backend services in Python or Go",
+            "Design systems for scale",
+            "Mentor other engineers",
+            "Shape technical direction"
+          ],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "5+ years building backend services in Python or Go",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r2",
+              "text": "Deep experience with PostgreSQL",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r3",
+              "text": "Experience with event-driven systems",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r4",
+              "text": "Designed systems for scale",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r5",
+              "text": "Mentor other engineers and shape technical direction",
+              "kind": "behavioural",
+              "priority": "must"
+            },
+            {
+              "id": "r6",
+              "text": "Experience with ClickHouse or analytics databases",
+              "kind": "technical",
+              "priority": "nice"
+            },
+            {
+              "id": "r7",
+              "text": "Open-source contributions",
+              "kind": "technical",
+              "priority": "nice"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Walk me through how you would structure a concurrent background worker in Python (using asyncio or Celery) versus Go (using goroutines and channels) for processing webhook deliveries. What are the key concurrency pitfalls in each language?",
+            "answer_outline": "Discusses concurrency primitives (async/await vs goroutines/channels), error handling, context cancellation, resource leaks (like unbuffered channel blocks or unmanaged coroutines), and graceful shutdown patterns.",
+            "difficulty": 2
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "How do you approach profiling and memory management in a high-throughput backend service written in Python or Go? Walk me through a time you tracked down a memory leak or CPU bottleneck.",
+            "answer_outline": "Mentions tooling (pprof in Go, cProfile/memray in Python), identifying garbage collection pressures, looking at heap allocations, and optimizing hot loops or lock contention.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "How would you diagnose and fix a sudden spike in PostgreSQL database latency caused by a bloated table and outdated query planner statistics?",
+            "answer_outline": "Covers checking `pg_stat_activity` and `pg_stat_statements`, identifying missing or fragmented indexes, executing `VACUUM FULL` or `REINDEX` considerations, and running `ANALYZE` to update statistics.",
+            "difficulty": 2
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "Walk me through how you design database migrations for zero-downtime deployments on a large PostgreSQL table with millions of rows. How do you handle constraints, column drops, and type changes safely?",
+            "answer_outline": "Discusses expanding and contracting schema changes, avoiding exclusive table locks, adding columns as nullable with default values later, creating indexes concurrently (`CONCURRENTLY`), and phased deployments.",
+            "difficulty": 3
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "Design an event-driven architecture using Kafka or RabbitMQ that guarantees at-least-once delivery. How do your consumers handle idempotency when processing duplicate events?",
+            "answer_outline": "Covers publisher confirms, consumer acknowledgments (acks), offset management, deduplication tables or distributed locks (Redis), and idempotency keys in downstream databases.",
+            "difficulty": 2
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "How do you handle schema evolution in an event-driven system where dozens of microservices publish and consume events from a shared message broker?",
+            "answer_outline": "Mentions schema registries (e.g., Confluent), backward and forward compatibility rules (Protobuf or Avro), versioning strategies in event payloads, and handling breaking changes gracefully.",
+            "difficulty": 3
+          },
+          {
+            "id": "q7",
+            "requirement_ids": [
+              "r4"
+            ],
+            "category": "technical",
+            "prompt": "Walk me through how you would design a rate-limiting service that handles hundreds of thousands of requests per second globally with low latency.",
+            "answer_outline": "Discusses algorithms (Token Bucket, Leaky Bucket, Sliding Window), data stores (Redis cluster with Lua scripts for atomicity), local caching strategies to reduce network hops, and handling failure modes.",
+            "difficulty": 2
+          },
+          {
+            "id": "q8",
+            "requirement_ids": [
+              "r4"
+            ],
+            "category": "technical",
+            "prompt": "How would you architect a data ingestion pipeline that ingests 50,000 writes per second, handles traffic bursts safely, and ensures no data loss during downstream outages?",
+            "answer_outline": "Covers load balancers, buffering layers (e.g., Kafka or SQS), horizontal worker scaling, backpressure handling, dead-letter queues (DLQs) for poison pills, and durable storage mechanisms.",
+            "difficulty": 3
+          },
+          {
+            "id": "q9",
+            "requirement_ids": [
+              "r6"
+            ],
+            "category": "technical",
+            "prompt": "When would you choose an analytical columnar database like ClickHouse over a traditional relational database like PostgreSQL, and what are the main trade-offs regarding updates and deletes?",
+            "answer_outline": "Explains column-oriented storage benefits for aggregation and scans, compression ratios, the cost of mutations (heavy background merges for updates/deletes in ClickHouse), and schema design best practices (e.g., ReplacingMergeTree).",
+            "difficulty": 2
+          },
+          {
+            "id": "q10",
+            "requirement_ids": [
+              "r7"
+            ],
+            "category": "technical",
+            "prompt": "Tell me about an open-source project or library you have contributed to or maintained. How did you approach code reviews, community feedback, and ensuring backward compatibility for users?",
+            "answer_outline": "Shares a specific contribution, discusses working with maintainers, writing clear documentation and tests, handling breaking changes, and managing user expectations in a public repo.",
+            "difficulty": 1
+          },
+          {
+            "id": "q11",
+            "requirement_ids": [
+              "r4"
+            ],
+            "category": "system-design",
+            "prompt": "Design a real-time event ingestion pipeline for PostHog that can reliably process 100,000 events per second from diverse SDKs. Address how you handle traffic spikes, ensure zero data loss, and store the incoming payloads efficiently for downstream querying in ClickHouse.",
+            "answer_outline": "1. Ingestion Layer: Load balancers, stateless API nodes handling JSON payloads, rate-limiting, and immediate auth/validation.\n2. Buffer/Queue: Kafka or Redpanda for decoupling ingestion from storage, partitioning strategy by project ID or distinct user to ensure ordering/parallelism.\n3. Consumer Workers: Golang-based workers batching events to optimize network calls and insert rates.\n4. Storage Layer: Bulk inserts into ClickHouse, handling schema evolution and deduplication.\n5. Trade-offs: Push vs. pull model, synchronous vs. asynchronous processing, and managing backpressure during unexpected traffic bursts.",
+            "difficulty": 3
+          },
+          {
+            "id": "q12",
+            "requirement_ids": [
+              "r4"
+            ],
+            "category": "system-design",
+            "prompt": "Design a distributed feature flag evaluation service that serves low-latency (sub-10ms) responses globally for PostHog customers, while supporting complex targeting rules and high write throughput for flag updates.",
+            "answer_outline": "1. Architecture: Edge caching/CDN vs. regional microservices, local evaluation SDKs vs. remote evaluation API.\n2. Data Distribution: Propagating feature flag definitions from the central Postgres/PostHog core down to edge nodes efficiently (using Redis or embedded key-value stores).\n3. Consistency vs. Availability: Handling partition tolerance (AP system) so applications can evaluate flags even if connection to the control plane is lost.\n4. Scalability: Horizontal auto-scaling of evaluation endpoints, caching strategies, and handling high concurrent reads.\n5. Trade-offs: Centralized telemetry vs. edge local logging, eventual consistency lag for flag updates.",
+            "difficulty": 2
+          },
+          {
+            "id": "q13",
+            "requirement_ids": [
+              "r5"
+            ],
+            "category": "behavioural",
+            "prompt": "Tell me about a time you noticed an architectural or engineering standard that needed improvement on your team. How did you shape the technical direction and bring other engineers along with you?",
+            "answer_outline": "A credible story demonstrates proactive identification of a technical gap, formulation of a clear proposal, hands-on guidance or mentoring to help others adopt the new direction, and a measurable positive impact on the team's output or code quality.",
+            "difficulty": 2
+          },
+          {
+            "id": "q14",
+            "requirement_ids": [
+              "r5"
+            ],
+            "category": "behavioural",
+            "prompt": "Describe a situation where you had to mentor a more junior engineer who was struggling with a complex backend design or scaling challenge. How did you balance giving them autonomy with ensuring the technical direction remained sound?",
+            "answer_outline": "A credible story shows patience, structured guidance that fosters independence rather than doing the work for them, and a deliberate effort to teach underlying architectural principles while delivering a reliable technical solution.",
+            "difficulty": 3
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "How do you manage concurrency and CPU-bound tasks in Python versus Go?",
+            "back": "Python relies on async/await or multiprocessing to bypass the GIL for I/O and CPU-bound tasks, while Go utilizes lightweight goroutines managed by an M:N scheduler communicating via channels. Go's native concurrency model makes high-throughput network services simpler to scale compared to Python's explicit async paradigm.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What are best practices for managing dependencies and packaging in large Python backend services?",
+            "back": "Use modern dependency managers like Poetry or pip-tools to generate strict lock files for reproducible builds. Structure code into modular packages, leverage type hinting with mypy for static analysis, and enforce clean separation between business logic and framework code.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "How do you diagnose and resolve a sudden spike in PostgreSQL query latency?",
+            "back": "First, inspect `pg_stat_activity` for blocked queries or long-running transactions, then use `EXPLAIN ANALYZE` to check if query execution plans shifted due to stale statistics. Resolve issues by adding targeted indexes, rewriting poorly optimized joins, or running `ANALYZE` to refresh table statistics.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f4",
+            "front": "What strategies do you use for zero-downtime schema migrations in a large PostgreSQL database?",
+            "back": "Break complex migrations into backward-compatible steps: first add new nullable columns or tables, deploy application code that writes to both old and new schemas, backfill historical data in batches, and finally drop deprecated columns in a subsequent deployment. Avoid taking long-held exclusive locks like `ACCESS EXCLUSIVE` on heavily trafficked tables.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f5",
+            "front": "How do you ensure at-least-once message delivery without creating downstream duplication issues in event-driven systems?",
+            "back": "Configure message brokers for at-least-once delivery by requiring manual acknowledgments after successful processing. Design downstream consumers to be idempotent, typically by using unique event IDs stored in a datastore or distributed cache to drop duplicate processing attempts.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f6",
+            "front": "What is the role of a schema registry in a distributed event-driven architecture?",
+            "back": "A schema registry enforces data contracts between independent event producers and consumers by storing versioned schemas (such as Avro, Protobuf, or JSON Schema). This prevents breaking changes from propagating through the pipeline and ensures downstream services can safely deserialize incoming events.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f7",
+            "front": "How do you approach horizontal scaling for a stateless backend service experiencing rapid traffic growth?",
+            "back": "Ensure services remain entirely stateless by offloading session state to a distributed cache like Redis and user data to scalable datastores. Place a load balancer in front of auto-scaling container groups to distribute incoming traffic evenly based on CPU or request-rate metrics.",
+            "requirement_ids": [
+              "r4"
+            ]
+          },
+          {
+            "id": "f8",
+            "front": "What is database sharding and when should you introduce it to a system architecture?",
+            "back": "Sharding splits a large dataset horizontally across multiple distinct database instances based on a shard key to bypass single-node CPU, storage, and I/O limits. Introduce it only after exhausting vertical scaling, read replicas, and query optimization, as it significantly increases architectural and operational complexity.",
+            "requirement_ids": [
+              "r4"
+            ]
+          },
+          {
+            "id": "f9",
+            "front": "How do you effectively mentor junior engineers while maintaining high team velocity?",
+            "back": "Pair programming, thorough and empathetic code reviews focused on teaching 'why' rather than just 'what', and delegating well-defined technical tasks with appropriate guardrails. Encourage ownership by letting them drive design docs while providing constructive feedback during reviews.",
+            "requirement_ids": [
+              "r5"
+            ]
+          },
+          {
+            "id": "f10",
+            "front": "How do you drive technical direction and gain consensus for a major architectural refactor across a team?",
+            "back": "Write a clear Request for Comments (RFC) or design doc outlining the problem, proposed solutions, trade-offs, and migration path. Facilitate open discussions to address concerns, build a proof-of-concept to de-risk unknowns, and align the technical roadmap with broader business priorities.",
+            "requirement_ids": [
+              "r5"
+            ]
+          },
+          {
+            "id": "f11",
+            "front": "What architectural characteristics make ClickHouse exceptionally fast for analytical queries compared to row-oriented databases?",
+            "back": "ClickHouse is a column-oriented DBMS that stores data for each column contiguously, enabling high compression ratios and minimizing disk I/O for queries touching only a subset of columns. It utilizes vectorized query execution and sparse primary indexes to rapidly scan billions of rows across multiple CPU cores.",
+            "requirement_ids": [
+              "r6"
+            ]
+          },
+          {
+            "id": "f12",
+            "front": "How do you design data ingestion pipelines from transactional databases into an analytical store like ClickHouse?",
+            "back": "Use Change Data Capture (CDC) tools like Debezium to stream row-level changes from PostgreSQL into a message broker like Kafka, then batch consume those events into ClickHouse. Batching is crucial because columnar databases perform best with bulk inserts rather than frequent individual row insertions.",
+            "requirement_ids": [
+              "r6"
+            ]
+          },
+          {
+            "id": "f13",
+            "front": "What is your typical workflow for contributing bug fixes or features to an open-source project?",
+            "back": "Fork the repository, create a focused feature branch, write comprehensive tests covering the new functionality or bug, and ensure all existing CI checks pass. Submit a well-documented pull request explaining the motivation, implementation details, and referencing any related issues.",
+            "requirement_ids": [
+              "r7"
+            ]
+          },
+          {
+            "id": "f14",
+            "front": "How do you evaluate an open-source library before adopting it into a production backend service?",
+            "back": "Assess project health by checking commit frequency, release recency, maintainer responsiveness, issue backlog, and community adoption metrics like GitHub stars and downloads. Review the license for compatibility, audit the codebase for performance overhead, and check security vulnerability history.",
+            "requirement_ids": [
+              "r7"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 7,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Designed systems for scale · Mentor other engineers and shape technical di…",
+              "question_ids": [
+                "q11",
+                "q14"
+              ],
+              "minutes": 95
+            },
+            {
+              "day": 2,
+              "focus": "5+ years building backend services in Python… · Deep experience with PostgreSQL",
+              "question_ids": [
+                "q2",
+                "q4"
+              ],
+              "minutes": 80
+            },
+            {
+              "day": 3,
+              "focus": "Experience with event-driven systems · Designed systems for scale",
+              "question_ids": [
+                "q6",
+                "q8"
+              ],
+              "minutes": 80
+            },
+            {
+              "day": 4,
+              "focus": "5+ years building backend services in Python… · Designed systems for scale",
+              "question_ids": [
+                "q1",
+                "q12"
+              ],
+              "minutes": 65
+            },
+            {
+              "day": 5,
+              "focus": "Mentor other engineers and shape technical di… · Deep experience with PostgreSQL",
+              "question_ids": [
+                "q13",
+                "q3"
+              ],
+              "minutes": 50
+            },
+            {
+              "day": 6,
+              "focus": "Experience with event-driven systems · Designed systems for scale",
+              "question_ids": [
+                "q5",
+                "q7"
+              ],
+              "minutes": 50
+            },
+            {
+              "day": 7,
+              "focus": "Experience with ClickHouse or analytics datab… · Open-source contributions",
+              "question_ids": [
+                "q9",
+                "q10"
+              ],
+              "minutes": 40
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    }
+  ]
+}
