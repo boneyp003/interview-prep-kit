@@ -1,14 +1,28 @@
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import { createApp } from "./app.js";
 import { loadApiConfig } from "./config.js";
 import { connectDb } from "./db/connect.js";
 import { sweepInterruptedJobs } from "./jobs/runner.js";
 
-async function main(): Promise<void> {
-  try {
-    (process as unknown as { loadEnvFile: (p?: string) => void }).loadEnvFile();
-  } catch {
-    /* no .env file — rely on the process environment */
+/** Load .env from the cwd, then walk up to the repo root (workspace layout). */
+function loadEnv(): void {
+  const load = (process as unknown as { loadEnvFile: (p?: string) => void }).loadEnvFile;
+  for (const candidate of [".env", "../.env", "../../.env"]) {
+    const path = resolve(process.cwd(), candidate);
+    if (existsSync(path)) {
+      try {
+        load(path);
+        return;
+      } catch {
+        /* keep looking */
+      }
+    }
   }
+}
+
+async function main(): Promise<void> {
+  loadEnv();
 
   const config = loadApiConfig();
 
