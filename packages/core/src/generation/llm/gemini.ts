@@ -30,18 +30,22 @@ export async function callGemini(
 ): Promise<GeminiResponse> {
   if (!apiKey) throw new LlmError("AUTH", "GEMINI_API_KEY is not set");
 
+  const generationConfig: Record<string, unknown> = {
+    temperature: req.temperature,
+    maxOutputTokens: req.maxOutputTokens,
+    ...(req.json ? { responseMimeType: "application/json" } : {}),
+  };
+  // Disable "thinking" on models that support the toggle: these are structured
+  // extraction/generation calls, and thinking tokens both count against the
+  // free-tier TPM budget and can exhaust maxOutputTokens before any JSON is
+  // produced. "-lite" models don't think and reject the field, so skip it there.
+  if (!/lite/i.test(model)) {
+    generationConfig.thinkingConfig = { thinkingBudget: 0 };
+  }
+
   const body: Record<string, unknown> = {
     contents: [{ role: "user", parts: [{ text: req.prompt }] }],
-    generationConfig: {
-      temperature: req.temperature,
-      maxOutputTokens: req.maxOutputTokens,
-      // Disable "thinking": these are structured extraction/generation calls, and
-      // thinking tokens both count against the free-tier TPM budget and can
-      // exhaust maxOutputTokens before any JSON is produced. Newer flash models
-      // ignore an unknown field here, so this is safe across versions.
-      thinkingConfig: { thinkingBudget: 0 },
-      ...(req.json ? { responseMimeType: "application/json" } : {}),
-    },
+    generationConfig,
   };
   if (req.system) {
     body.systemInstruction = { parts: [{ text: req.system }] };

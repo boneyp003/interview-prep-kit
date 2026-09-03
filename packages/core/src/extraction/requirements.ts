@@ -89,7 +89,9 @@ export async function extractRequirements(jd: string, llm: LlmClientLike): Promi
   if (requirements.length === 0) {
     notes.push("No explicit requirements found in the job description.");
   }
-  const thin = out.thin || requirements.length <= 2 || trimmed.length < 300;
+  // Treat as thin on our own signals; only trust the model's `thin` flag when it
+  // also failed to extract much (models are inconsistent about this).
+  const thin = requirements.length <= 2 || trimmed.length < 300 || (out.thin && requirements.length <= 4);
   if (thin) notes.push("Job description is thin; kit scope is limited to what it contains.");
 
   return {

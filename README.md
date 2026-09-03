@@ -75,7 +75,7 @@ core/src/
 | Decision | Choice | Why |
 | --- | --- | --- |
 | Language | TypeScript | The kit schema has strict cross-field invariants (stable ids, id references, integer durations). Zod + types catch violations at the boundary. |
-| LLM | Google Gemini, `gemini-flash-latest` | Genuine free tier, native JSON output, single API key. `flash-latest` is an alias so it does not go stale. "Thinking" is disabled — these are structured calls and thinking tokens eat the per-minute budget. |
+| LLM | Google Gemini, `gemini-flash-lite-latest` | Genuine free tier, native JSON output, single API key. `-latest` is an alias so the model does not go stale; `flash-lite` is tuned for exactly this kind of high-volume structured call and has roomier free limits. "Thinking" is disabled — these are structured calls and thinking tokens eat the per-minute budget. |
 | LLM output | `responseMimeType: application/json` + our own Zod validate & repair (no `responseSchema`) | Gemini's `responseSchema` supports only an OpenAPI subset and couples every prompt to a converter. One corrective retry on our side is more robust and keeps the schema single-sourced. |
 | LLM pacing | Shared client-side RPM **and** TPM budget (rolling 60s window); retries honour the server `Retry-After` exactly | The brief warns free tiers cap tokens-per-minute, not just requests. One budget across the whole run so every step — and every concurrent batch case — slows together. |
 | Web search | DuckDuckGo HTML endpoint | No API key on any free tier. Plain queries + a reddit-scoped fallback; results re-ranked so first-hand candidate discussion leads. A desktop UA is sent for these read-only requests (the endpoint returns nothing to bot UAs). Degrades to empty, never fatal. |
@@ -325,13 +325,31 @@ reserved for cases where no kit could be produced at all.
 
 ---
 
+## Verified end-to-end
+
+A real `npm run evaluate` run (model `gemini-flash-lite-latest`, live web):
+
+- **`posthog.com`, 7 days → valid Appendix A kit in ~26 s.** 7 requirements
+  (5 must), the crawler found PostHog's hiring process at
+  `/handbook/people/hiring-process/engineering-hiring` (not a guessable path),
+  the analysis pulled out its real stages (recruiter screen → hiring-manager
+  screen → presentation → paid trial day), 14 questions across 3 categories,
+  14 flashcards, a balanced 7-day schedule, `coverage.uncovered_requirement_ids:
+  []` after one pass. `validateKit` and `assessKitQuality` both clean. See
+  [`docs/sample-kit.json`](docs/sample-kit.json).
+- **2-case batch** (`posthog.com` 5-day + `gitlab.com` 3-day) → both `ok` in
+  81 s, Appendix B valid, per-case day counts respected; GitLab's 7 unreachable
+  crawl targets were recorded as skipped sources, not a failure.
+
 ## Notes / trade-offs
 
-- **`gemini-flash-latest` free tier is genuinely tight** (~20 requests/minute
-  during development). The pipeline is built for exactly this — it paces
-  itself, backs off on the server's terms, and degrades non-fatal steps rather
-  than failing — but a heavily-shared key makes individual runs slow. A fresh
-  key sails through.
+- **Model choice under duress.** `gemini-2.5-flash` / `-flash-lite` return
+  "no longer available to new users" for a fresh key in the test environment,
+  and `gemini-flash-latest` resolves to a model with a ~20 req/min free ceiling.
+  `gemini-flash-lite-latest` is both available and the right tool (built for
+  high-volume structured calls). If your key hits limits, the pipeline paces
+  itself, honours `Retry-After`, and degrades non-fatal steps — set
+  `GEMINI_RPM` / `GEMINI_MODEL` in `.env` to match your tier.
 - No email verification / password reset / roles — explicitly out of scope.
 - Section regeneration for the brief and a question category calls the LLM
   inline (10–30 s); full generation is the async, polled path.

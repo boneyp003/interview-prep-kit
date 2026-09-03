@@ -54,18 +54,16 @@ export function buildSchedule(input: ScheduleInput): Schedule {
 
   if (weighted.length > 0) {
     const studyDays = Math.min(days, weighted.length);
-    const totalMinutes = weighted.reduce((sum, w) => sum + w.minutes, 0);
-    const targetPerDay = Math.ceil(totalMinutes / studyDays);
 
-    let dayIndex = 0;
-    let dayMinutes = 0;
-    for (const item of weighted) {
-      if (dayMinutes > 0 && dayMinutes + item.minutes > targetPerDay && dayIndex < studyDays - 1) {
-        dayIndex++;
-        dayMinutes = 0;
-      }
-      buckets[dayIndex]!.push(item);
-      dayMinutes += item.minutes;
+    // Balance by count first (so no day is dumped with the remainder), then let
+    // minutes fall out. Walking the weight-sorted list into day 1, day 2, … in
+    // rounds keeps the hardest / highest-priority material on the earliest days.
+    const base = Math.floor(weighted.length / studyDays);
+    const remainder = weighted.length % studyDays;
+    let cursor = 0;
+    for (let d = 0; d < studyDays; d++) {
+      const take = base + (d < remainder ? 1 : 0); // extra items go to the earliest days
+      for (let n = 0; n < take; n++) buckets[d]!.push(weighted[cursor++]!);
     }
 
     fillRevisionDays(buckets, weighted, studyDays);

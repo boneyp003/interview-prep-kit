@@ -40,7 +40,7 @@ export function loadCoreConfig(env: NodeJS.ProcessEnv = process.env): CoreConfig
   return Object.freeze({
     gemini: {
       apiKey: env.GEMINI_API_KEY ?? "",
-      model: env.GEMINI_MODEL?.trim() || "gemini-flash-latest",
+      model: env.GEMINI_MODEL?.trim() || "gemini-flash-lite-latest",
       requestsPerMinute: num(env.GEMINI_RPM, 10),
       tokensPerMinute: num(env.GEMINI_TPM, 250_000),
       maxRetries: num(env.GEMINI_MAX_RETRIES, 3),
