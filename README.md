@@ -82,7 +82,7 @@ core/src/
 | DB | MongoDB / Mongoose | Preferred stack. The kit is one document; the nested Appendix A shape maps directly. `kit`, `itemState`, `research` are stored as `Mixed` — Zod is the schema authority, not Mongoose. |
 | Auth | JWT in an httpOnly cookie | Minimal, per the brief. No server-side session store to run. `SameSite=Lax` in dev, `None; Secure` in production. |
 | Web ↔ API | Next rewrites `/api/*` to the API server | The session cookie stays first-party; no browser CORS. |
-| Dev/test/CLI runtime | `tsx` (TypeScript executed directly) | No build step for `npm run dev`, `npm test`, or `npm run evaluate`. `core`'s package `main`/`types` point at source. `npm run build` still emits JS for a production `node` deploy. |
+| Dev/test/CLI runtime | `tsx` (TypeScript executed directly) | No build step for `npm run dev`, `npm test`, or `npm run evaluate`. `core`'s package `main`/`types` point at source. The API and CLI run under `tsx` in production too (`npm --workspace @ipk/api start`); the web app is `next build` / `next start`. |
 
 ### Deterministic — never handed to the model
 

@@ -17,7 +17,7 @@
     "test:core": "npm run -w @ipk/core test",
     "test:api": "npm run -w @ipk/api test",
     "typecheck": "npm run -w @ipk/core typecheck && npm run -w @ipk/api typecheck && npm run -w @ipk/web typecheck",
-    "build": "npm run -w @ipk/core build && npm run -w @ipk/api build && npm run -w @ipk/web build"
+    "build": "npm run typecheck && npm run -w @ipk/web build"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
