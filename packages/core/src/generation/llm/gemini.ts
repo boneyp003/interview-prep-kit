@@ -67,16 +67,21 @@ export async function callGemini(
 
   if (!response.ok) {
     const detail = await safeText(response);
+    const apiMessage = extractApiMessage(detail);
     if (response.status === 429) {
       throw new LlmError("RATE_LIMITED", `Gemini 429: ${retryHint(detail)}`);
     }
-    if (response.status === 401 || response.status === 403) {
-      throw new LlmError("AUTH", `Gemini ${response.status}: ${detail.slice(0, 200)}`);
+    if (
+      response.status === 401 ||
+      response.status === 403 ||
+      /API_KEY_INVALID|api key not valid|permission denied/i.test(detail)
+    ) {
+      throw new LlmError("AUTH", `Gemini ${response.status}: ${apiMessage}`);
     }
     if (response.status >= 500) {
-      throw new LlmError("SERVER", `Gemini ${response.status}`);
+      throw new LlmError("SERVER", `Gemini ${response.status}: ${apiMessage}`);
     }
-    throw new LlmError("INVALID_OUTPUT", `Gemini ${response.status}: ${detail.slice(0, 300)}`);
+    throw new LlmError("INVALID_OUTPUT", `Gemini ${response.status}: ${apiMessage}`);
   }
 
   const data = (await response.json()) as GeminiApiResponse;
@@ -109,6 +114,17 @@ interface GeminiApiResponse {
     candidatesTokenCount?: number;
     totalTokenCount?: number;
   };
+}
+
+/** Pull a clean `.error.message` out of a Gemini error body, else a short slice. */
+export function extractApiMessage(detail: string): string {
+  try {
+    const parsed = JSON.parse(detail) as { error?: { message?: string } };
+    if (parsed.error?.message) return parsed.error.message;
+  } catch {
+    /* not JSON */
+  }
+  return detail.replace(/\s+/g, " ").slice(0, 200);
 }
 
 async function safeText(response: Response): Promise<string> {

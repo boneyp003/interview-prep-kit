@@ -1,0 +1,4 @@
+[
+  { "id": "case-01", "jd": "Senior Backend Engineer\n\nWe are looking for 5+ years of Node.js, experience designing distributed systems, and a track record mentoring engineers. Bonus: Kubernetes.", "company_url": "https://posthog.com/", "days": 5 },
+  { "id": "case-02", "jd": "Frontend Engineer. React, TypeScript, accessibility. Nice to have: design systems experience.", "company_url": "https://gitlab.com/", "days": 3 }
+]

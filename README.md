@@ -73,7 +73,28 @@ cp .env.example .env   # fill in GEMINI_API_KEY and AUTH_SECRET
 npm test               # core: schedule allocation, coverage, structure validation
 ```
 
-_Run instructions for the app and the batch command: TBD._
+### Batch command (Section 9)
+
+```bash
+npm run evaluate -- --input packages/core/fixtures/cases.example.json --output kits.json
+```
+
+Reads `[{ id, jd, company_url, days }]`, runs the **same pipeline** as the app
+over each case (via `runBatch` in `core/src/cli/batch.ts`), writes one Appendix B
+document. Options: `--concurrency <n>` (default 3), `--case-timeout <secs>`
+(default 240), `--block-private` (reject private/loopback company URLs — off by
+default so localhost fixtures work), `--env-path <file>` (default `.env`).
+
+- One shared LLM client + retrieval bundle across all cases, so the per-minute
+  token/request budget governs the whole run — 5 cases finish within 15 minutes
+  including rate-limit backoff.
+- A case that throws is recorded as `{ status: "failed", error: { code, message } }`
+  and the run continues.
+- **A company we could only partially research is `ok`**, with the gaps in
+  `kit.coverage` and an honest brief — per Appendix B, a missing hiring page or
+  an unreachable site is not a failure. `failed` is reserved for cases where no
+  kit could be produced at all (LLM unavailable, kit fails structural validation,
+  per-case timeout).
 
 ## Coverage second pass (Section 4)
 

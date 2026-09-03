@@ -9,7 +9,7 @@
     "packages/web"
   ],
   "scripts": {
-    "evaluate": "npm run -w @ipk/core evaluate --",
+    "evaluate": "tsx packages/core/src/cli/evaluate.ts",
     "dev": "npm-run-all --parallel dev:api dev:web",
     "dev:api": "npm run -w @ipk/api dev",
     "dev:web": "npm run -w @ipk/web dev",
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
+    "tsx": "^4.19.1",
     "typescript": "^5.6.3"
   },
   "engines": {
