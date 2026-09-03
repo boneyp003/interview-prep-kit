@@ -1,12 +1,17 @@
 node_modules/
-dist/
 .next/
 out/
-coverage/
 *.log
 .env
 .env.local
 .DS_Store
-packages/*/dist/
 tmp/
 *.tsbuildinfo
+
+# build output
+/dist/
+packages/*/dist/
+
+# test coverage output (anchored so it doesn't match src/coverage/)
+/coverage/
+packages/*/coverage/
