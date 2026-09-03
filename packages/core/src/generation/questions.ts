@@ -3,7 +3,7 @@ import type { Question, QuestionCategory } from "../schema/kit.js";
 import type { IdAllocator } from "../util/ids.js";
 import type { HiringProcess } from "./hiring-process.js";
 import type { CategoryPlan, PlannedItem } from "./question-plan.js";
-import type { LlmClient } from "./llm/index.js";
+import type { LlmClientLike } from "./llm/index.js";
 import { UNTRUSTED_CONTENT_SYSTEM_CLAUSE } from "./prompts/untrusted.js";
 
 export interface GenerationContext {
@@ -70,7 +70,7 @@ function itemsBlock(items: PlannedItem[]): string {
 export async function generateQuestionsForCategory(
   plan: CategoryPlan,
   ctx: GenerationContext,
-  llm: LlmClient,
+  llm: LlmClientLike,
   alloc: IdAllocator,
 ): Promise<Question[]> {
   if (plan.items.length === 0) return [];
@@ -101,7 +101,7 @@ export async function generateQuestionsForRequirement(
   item: PlannedItem,
   category: QuestionCategory,
   ctx: GenerationContext,
-  llm: LlmClient,
+  llm: LlmClientLike,
   alloc: IdAllocator,
   count = 1,
 ): Promise<Question[]> {

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { validateKit, checkKitIntegrity, type Kit } from "./kit.js";
+import { validateKit, checkKitIntegrity, assessKitQuality, type Kit } from "./kit.js";
 
 function baseKit(): Kit {
   return {
@@ -66,14 +66,15 @@ test("catches a question referencing an unknown requirement", () => {
   assert.ok(issues.some((i) => i.message.includes("r9")));
 });
 
-test("catches an uncovered must-have requirement", () => {
+test("an honestly-reported must-have gap is still structurally valid", () => {
   const kit = baseKit();
   kit.questions = [];
   kit.flashcards = [];
   kit.schedule.days[0]!.question_ids = [];
   kit.coverage.uncovered_requirement_ids = ["r1", "r2"];
-  const issues = checkKitIntegrity(kit);
-  assert.ok(issues.some((i) => i.message.includes('"r1"')));
+  assert.equal(checkKitIntegrity(kit).length, 0);
+  const warnings = assessKitQuality(kit);
+  assert.ok(warnings.some((w) => w.includes('"r1"')));
 });
 
 test("catches schedule length mismatch", () => {

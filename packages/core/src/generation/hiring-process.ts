@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CrawledPage } from "../retrieval/crawl.js";
 import type { SearchResult } from "../retrieval/search.js";
-import type { LlmClient } from "./llm/index.js";
+import type { LlmClientLike } from "./llm/index.js";
 import { UNTRUSTED_CONTENT_SYSTEM_CLAUSE, untrustedBlock } from "./prompts/untrusted.js";
 
 /**
@@ -57,7 +57,7 @@ const SYSTEM = [
 export async function analyseHiringProcess(
   hiringPages: CrawledPage[],
   discussion: SearchResult[],
-  llm: LlmClient,
+  llm: LlmClientLike,
 ): Promise<HiringProcess> {
   const sources = [
     ...hiringPages.map((p) => p.url),

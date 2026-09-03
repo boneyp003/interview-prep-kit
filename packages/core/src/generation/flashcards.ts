@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { Flashcard, Requirement } from "../schema/kit.js";
 import type { IdAllocator } from "../util/ids.js";
 import type { GenerationContext } from "./questions.js";
-import type { LlmClient } from "./llm/index.js";
+import type { LlmClientLike } from "./llm/index.js";
 import { UNTRUSTED_CONTENT_SYSTEM_CLAUSE } from "./prompts/untrusted.js";
 
 /**
@@ -32,7 +32,7 @@ const SYSTEM = [
 export async function generateFlashcards(
   requirements: Requirement[],
   ctx: GenerationContext,
-  llm: LlmClient,
+  llm: LlmClientLike,
   alloc: IdAllocator,
   perRequirement = 2,
 ): Promise<Flashcard[]> {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { LlmClient } from "../generation/llm/index.js";
+import type { LlmClientLike } from "../generation/llm/index.js";
 import { UNTRUSTED_CONTENT_SYSTEM_CLAUSE, untrustedBlock } from "../generation/prompts/untrusted.js";
 import { REQUIREMENT_KINDS, REQUIREMENT_PRIORITIES, type Requirement } from "../schema/kit.js";
 
@@ -49,12 +49,12 @@ const SYSTEM = [
   "- If the description is a short stub with little to go on, extract only what is there and set thin=true.",
 ].join("\n");
 
-export async function extractRequirements(jd: string, llm: LlmClient): Promise<ExtractedRole> {
+export async function extractRequirements(jd: string, llm: LlmClientLike): Promise<ExtractedRole> {
   const trimmed = jd.trim();
   const notes: string[] = [];
 
   if (trimmed.length < 40) {
-    notes.push("Job description is nearly empty; extracted minimal requirements.");
+    notes.push("Job description is nearly empty (thin); no requirements could be extracted.");
     return {
       title: "",
       seniority: "",

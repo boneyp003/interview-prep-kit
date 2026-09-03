@@ -26,6 +26,13 @@ export interface LlmCallLog {
   ms: number;
 }
 
+/** Structural type the pipeline depends on, so tests can inject a fake. */
+export interface LlmClientLike {
+  generateText(opts: GenerateOptions): Promise<string>;
+  generateJson<T>(schema: ZodType<T>, opts: GenerateOptions): Promise<T>;
+  readonly log: LlmCallLog[];
+}
+
 /**
  * The generation-facing LLM client. Responsibilities:
  *   - draw every call through the shared per-minute budget (RPM + TPM)
@@ -35,7 +42,7 @@ export interface LlmCallLog {
  *
  * Nothing above this layer talks to Gemini directly.
  */
-export class LlmClient {
+export class LlmClient implements LlmClientLike {
   private readonly budget: LlmBudget;
   readonly log: LlmCallLog[] = [];
 

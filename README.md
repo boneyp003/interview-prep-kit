@@ -75,9 +75,24 @@ npm test               # core: schedule allocation, coverage, structure validati
 
 _Run instructions for the app and the batch command: TBD._
 
-## Still to document
+## Coverage second pass (Section 4)
 
-- Number of coverage passes and the stopping rule (Section 4)
+After the first draft, `checkCoverage` (deterministic) compares every requirement
+id against the `requirement_ids` on the generated questions. Each requirement
+with no question is a gap. The pipeline then generates one targeted call per
+gap (`generateQuestionsForRequirement`) and re-checks.
+
+**Stopping rule:** loop until *no requirement is uncovered*, or a pass makes no
+progress (gap count didn't shrink — usually a model that keeps refusing a
+requirement), or **3 passes** total, whichever comes first. Three is enough that
+a transient bad generation gets two more chances without letting a genuinely
+un-generatable requirement spin forever. `coverage.passes` records how many
+checks ran; a kit that needed one gap-fill round reports `2`. If a must-have is
+still uncovered when the loop stops, it stays in
+`coverage.uncovered_requirement_ids` and a warning is attached — the kit is
+still emitted (honest gap), not failed.
+
+## Still to document
 - Builder generated/edited/pinned state model (Section 6)
 - Concurrency / double-trigger handling for slow generation (Section 13)
 - Spaced-repetition choice for practice mode (Section 7)

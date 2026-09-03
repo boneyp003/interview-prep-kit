@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CrawledPage } from "../retrieval/crawl.js";
 import type { CompanyBrief } from "../schema/kit.js";
-import type { LlmClient } from "./llm/index.js";
+import type { LlmClientLike } from "./llm/index.js";
 import { UNTRUSTED_CONTENT_SYSTEM_CLAUSE, untrustedBlock } from "./prompts/untrusted.js";
 
 /**
@@ -30,7 +30,7 @@ const SYSTEM = [
 export async function generateCompanyBrief(
   companyName: string,
   pages: CrawledPage[],
-  llm: LlmClient,
+  llm: LlmClientLike,
 ): Promise<CompanyBrief> {
   const usable = pages.filter((p) => p.text.trim().length > 120);
   const sources = usable.map((p) => p.url);

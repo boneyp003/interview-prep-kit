@@ -115,18 +115,18 @@ export interface StructuralIssue {
 }
 
 /**
- * Cross-field integrity checks the brief calls out explicitly:
+ * Structural integrity — internal consistency of the kit. This is the gate that
+ * must pass before a kit is persisted or emitted (brief Section 13):
  *  - every id is unique within its collection
- *  - every question.requirement_ids entry references a real requirement
- *  - every flashcard.requirement_ids entry references a real requirement
+ *  - every question / flashcard requirement_ids entry references a real requirement
  *  - every schedule question_id references a real question
- *  - schedule length equals days_available
- *  - every `must` requirement is covered by at least one question AND
- *    appears somewhere in the schedule
- *  - coverage.uncovered_requirement_ids is consistent with the questions
+ *  - schedule length equals days_available, days numbered 1..N
+ *  - coverage.uncovered_requirement_ids equals the truly uncovered set
  *
- * Kept separate from the Zod shape so callers can run shape and integrity
- * checks independently and report precise reasons.
+ * Coverage *completeness* (are all must-haves actually covered?) is a quality
+ * bar, enforced by the pipeline's second-pass loop and reported via
+ * `assessKitQuality` — not a structural invariant, so an honestly-reported gap
+ * does not make a kit invalid.
  */
 export function checkKitIntegrity(kit: Kit): StructuralIssue[] {
   const issues: StructuralIssue[] = [];
@@ -171,39 +171,20 @@ export function checkKitIntegrity(kit: Kit): StructuralIssue[] {
     });
   }
 
-  const scheduledQuestionIds = new Set<string>();
   kit.schedule.days.forEach((d, i) => {
     if (d.day !== i + 1) {
       issues.push({ path: `schedule.days[${i}]`, message: `day should be ${i + 1}, got ${d.day}` });
     }
     for (const qid of d.question_ids) {
-      scheduledQuestionIds.add(qid);
       if (!qIdSet.has(qid)) {
         issues.push({ path: `schedule.days[${i}]`, message: `unknown question_id "${qid}"` });
       }
     }
   });
 
-  // Coverage: which requirements have at least one question?
+  // Which requirements have at least one question?
   const coveredReqIds = new Set<string>();
   for (const q of kit.questions) for (const rid of q.requirement_ids) coveredReqIds.add(rid);
-
-  for (const r of kit.role.requirements) {
-    if (r.priority !== "must") continue;
-    if (!coveredReqIds.has(r.id)) {
-      issues.push({ path: "coverage", message: `must-have requirement "${r.id}" has no question` });
-      continue;
-    }
-    const inSchedule = kit.questions
-      .filter((q) => q.requirement_ids.includes(r.id))
-      .some((q) => scheduledQuestionIds.has(q.id));
-    if (!inSchedule) {
-      issues.push({
-        path: "schedule",
-        message: `must-have requirement "${r.id}" is not represented in the schedule`,
-      });
-    }
-  }
 
   // coverage.uncovered_requirement_ids must equal the true set of uncovered reqs.
   const actuallyUncovered = reqIds.filter((id) => !coveredReqIds.has(id)).sort();
@@ -221,6 +202,33 @@ export function checkKitIntegrity(kit: Kit): StructuralIssue[] {
 export interface KitValidation {
   ok: boolean;
   issues: StructuralIssue[];
+}
+
+/**
+ * Quality signals that don't affect structural validity but the caller should
+ * know about: must-have requirements with no question, or must-haves whose
+ * questions never appear in the schedule.
+ */
+export function assessKitQuality(kit: Kit): string[] {
+  const warnings: string[] = [];
+  const scheduled = new Set(kit.schedule.days.flatMap((d) => d.question_ids));
+  const covered = new Set<string>();
+  for (const q of kit.questions) for (const rid of q.requirement_ids) covered.add(rid);
+
+  for (const r of kit.role.requirements) {
+    if (r.priority !== "must") continue;
+    if (!covered.has(r.id)) {
+      warnings.push(`must-have requirement "${r.id}" (${r.text}) has no question`);
+      continue;
+    }
+    const inSchedule = kit.questions
+      .filter((q) => q.requirement_ids.includes(r.id))
+      .some((q) => scheduled.has(q.id));
+    if (!inSchedule) {
+      warnings.push(`must-have requirement "${r.id}" is not represented in the schedule`);
+    }
+  }
+  return warnings;
 }
 
 /** Full gate used before persisting or emitting a kit. */

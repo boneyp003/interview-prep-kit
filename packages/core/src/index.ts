@@ -16,3 +16,9 @@
  *   builder     generated / edited / pinned state, merge-on-regenerate
  */
 export * from "./schema/index.js";
+export { loadCoreConfig, type CoreConfig } from "./config/index.js";
+export * from "./pipeline/index.js";
+export { createRetrieval } from "./retrieval/index.js";
+export { createLlm, LlmClient, LlmError } from "./generation/llm/index.js";
+export { checkCoverage } from "./coverage/index.js";
+export { buildSchedule } from "./scheduling/index.js";
