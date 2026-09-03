@@ -136,7 +136,7 @@ export class LlmClient implements LlmClientLike {
         const hinted = retryDelayMs(err.message) ?? 0;
         const wait =
           err.code === "RATE_LIMITED"
-            ? Math.min(45_000, Math.max(hinted, 20_000 + attempt * 5_000))
+            ? Math.min(35_000, Math.max(hinted, 15_000 + attempt * 5_000))
             : Math.max(hinted, backoffDelay(attempt, 1_000, 30_000));
         if (err.code === "RATE_LIMITED") this.budget.penalize(wait);
         await delay(wait);

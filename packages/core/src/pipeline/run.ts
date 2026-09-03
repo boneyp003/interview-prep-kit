@@ -162,13 +162,23 @@ export async function runPipeline(
   // ── 5. Company brief ────────────────────────────────────────────────────
   emit("company-brief", "start");
   const briefPages = dedupePages([...aboutPages, ...crawlPages]).slice(0, 6);
-  const companyBrief = await guardLlm("company-brief", () =>
-    generateCompanyBrief(companyName, briefPages, llm),
-  );
-  if (companyBrief.sources.length === 0) {
-    warn("company-brief", "Company brief is based on no retrieved pages; treat it as incomplete.");
+  let companyBrief: Kit["company_brief"];
+  try {
+    companyBrief = await generateCompanyBrief(companyName, briefPages, llm);
+    if (companyBrief.sources.length === 0) {
+      warn("company-brief", "Company brief is based on no retrieved pages; treat it as incomplete.");
+    }
+    emit("company-brief", "done");
+  } catch (err) {
+    if (fatalLlm(err)) throw toPipelineError(err, "company-brief");
+    warn("company-brief", `Brief generation failed: ${errText(err)}`);
+    companyBrief = {
+      summary: `${companyName || "This company"} could not be summarised — brief generation did not complete. Treat this section as incomplete and research the company directly.`,
+      what_they_do: "Not established.",
+      sources: [],
+    };
+    emit("company-brief", "skip");
   }
-  emit("company-brief", "done");
 
   const ctx: GenerationContext = {
     companyName,
