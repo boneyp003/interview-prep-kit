@@ -55,6 +55,7 @@ export function startGeneration(kitId: string, core: CoreConfig): Promise<void> 
           $set: {
             status: "ready",
             kit: outcome.kit,
+            research: outcome.research,
             itemState: initialItemState({
               questions: outcome.kit.questions,
               flashcards: outcome.kit.flashcards,

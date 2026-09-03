@@ -9,4 +9,5 @@ export {
   type PipelineWarning,
   type ProgressEvent,
   type ProgressListener,
+  type ResearchSnapshot,
 } from "./types.js";

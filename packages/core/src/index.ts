@@ -40,3 +40,4 @@ export {
 } from "./generation/questions.js";
 export { generateFlashcards } from "./generation/flashcards.js";
 export { analyseHiringProcess, type HiringProcess } from "./generation/hiring-process.js";
+export * from "./practice/index.js";

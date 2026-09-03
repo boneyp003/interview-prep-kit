@@ -1,6 +1,5 @@
 import { Schema, model, Types, type HydratedDocument } from "mongoose";
-import type { Kit } from "@ipk/core";
-import type { ItemStateMap } from "@ipk/core";
+import type { Kit, ItemStateMap, ResearchSnapshot } from "@ipk/core";
 
 /** Lifecycle of a kit record. */
 export type KitStatus = "queued" | "running" | "ready" | "failed";
@@ -28,6 +27,8 @@ export interface KitRecord {
   /** sha256 of normalised (jd + companyUrl) — dedupe key per user. */
   inputHash: string;
   kit: Kit | null;
+  /** Retrieval snapshot, reused for single-section regeneration without re-crawling. */
+  research: ResearchSnapshot | null;
   itemState: ItemStateMap;
   sectionState: { companyBrief: { edited: boolean }; schedule: { edited: boolean } };
   practice: Record<string, PracticeRecord>;
@@ -52,6 +53,7 @@ const kitSchema = new Schema<KitRecord>(
     },
     inputHash: { type: String, required: true, index: true },
     kit: { type: Schema.Types.Mixed, default: null },
+    research: { type: Schema.Types.Mixed, default: null },
     itemState: { type: Schema.Types.Mixed, default: {} },
     sectionState: {
       companyBrief: { edited: { type: Boolean, default: false } },
