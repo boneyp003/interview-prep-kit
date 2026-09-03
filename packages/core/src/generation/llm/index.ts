@@ -133,11 +133,15 @@ export class LlmClient implements LlmClientLike {
         // On a rate-limit the server's per-minute window is full: wait at least
         // long enough for it to roll over, take the max of the server hint and
         // our own backoff, and slow every other call sharing this budget too.
-        const hinted = retryDelayMs(err.message) ?? 0;
-        const wait =
-          err.code === "RATE_LIMITED"
-            ? Math.min(35_000, Math.max(hinted, 15_000 + attempt * 5_000))
-            : Math.max(hinted, backoffDelay(attempt, 1_000, 30_000));
+        const hinted = retryDelayMs(err.message);
+        let wait: number;
+        if (err.code === "RATE_LIMITED") {
+          // Honour the server's Retry-After exactly (plus a small buffer); only
+          // fall back to our own guess when it gives no hint.
+          wait = hinted !== undefined ? hinted + 2_000 : Math.min(35_000, 15_000 + attempt * 5_000);
+        } else {
+          wait = Math.max(hinted ?? 0, backoffDelay(attempt, 1_000, 30_000));
+        }
         if (err.code === "RATE_LIMITED") this.budget.penalize(wait);
         await delay(wait);
         attempt++;
