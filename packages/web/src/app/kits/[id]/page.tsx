@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import { Button, Spinner } from "@/components/ui";
 import { GenerationProgress } from "@/components/GenerationProgress";
 import { KitBuilder } from "@/components/KitBuilder";
+import { WeakSpots } from "@/components/WeakSpots";
 
 export default function KitPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -63,6 +64,12 @@ export default function KitPage({ params }: { params: Promise<{ id: string }> })
               {error}
             </p>
           )}
+          <details className="rounded-lg border border-black/10 p-4 dark:border-white/10">
+            <summary className="cursor-pointer font-medium">Weak spots — where to focus next</summary>
+            <div className="mt-3">
+              <WeakSpots kitId={id} />
+            </div>
+          </details>
           <KitBuilder kitId={id} record={kit} mutate={mutate} />
         </>
       )}

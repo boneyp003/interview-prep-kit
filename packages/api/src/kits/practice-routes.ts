@@ -1,6 +1,12 @@
 import { Router } from "express";
 import { z } from "zod";
-import { orderForSession, recordReview, summarisePractice, type Confidence } from "@ipk/core";
+import {
+  analyseWeakSpots,
+  orderForSession,
+  recordReview,
+  summarisePractice,
+  type Confidence,
+} from "@ipk/core";
 import type { ApiConfig } from "../config.js";
 import { requireAuth } from "../auth/middleware.js";
 import { AppError, asyncHandler } from "../http/errors.js";
@@ -60,6 +66,16 @@ export function practiceRoutes(config: ApiConfig): Router {
       const doc = await load(req);
       const kit = requireReady(doc);
       res.json({ summary: summarisePractice(kit.flashcards, doc.practice) });
+    }),
+  );
+
+  /** "Weak spots" report — where to spend the next hour (optional feature). */
+  router.get(
+    "/:id/weak-spots",
+    asyncHandler(async (req, res) => {
+      const doc = await load(req);
+      const kit = requireReady(doc);
+      res.json({ weakSpots: analyseWeakSpots(kit, doc.practice) });
     }),
   );
 
