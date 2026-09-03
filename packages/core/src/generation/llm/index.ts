@@ -130,8 +130,16 @@ export class LlmClient implements LlmClientLike {
           lease.settle(estimate);
           throw err;
         }
-        const hinted = retryDelayMs(err.message);
-        await delay(hinted ?? backoffDelay(attempt, 1000, 30_000));
+        // On a rate-limit the server's per-minute window is full: wait at least
+        // long enough for it to roll over, take the max of the server hint and
+        // our own backoff, and slow every other call sharing this budget too.
+        const hinted = retryDelayMs(err.message) ?? 0;
+        const wait =
+          err.code === "RATE_LIMITED"
+            ? Math.min(45_000, Math.max(hinted, 20_000 + attempt * 5_000))
+            : Math.max(hinted, backoffDelay(attempt, 1_000, 30_000));
+        if (err.code === "RATE_LIMITED") this.budget.penalize(wait);
+        await delay(wait);
         attempt++;
       }
     }

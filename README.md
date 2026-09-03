@@ -42,7 +42,7 @@ core/src/
 | Decision | Choice | Why |
 | --- | --- | --- |
 | Language | TypeScript | The kit schema has strict cross-field invariants (stable ids, id references, integer durations). Zod + types catch violations at the boundary. |
-| LLM | Google Gemini `gemini-2.5-flash` | Genuine free tier, generous tokens-per-minute, native JSON output, single API key, no card required. |
+| LLM | Google Gemini `gemini-flash-latest` | Genuine free tier, generous tokens-per-minute, native JSON output, single API key, no card required. |
 | Web search | DuckDuckGo HTML endpoint (`html.duckduckgo.com`) | No API key needed on any free tier. Plain queries (`<company> interview process`), a reddit-scoped fallback, results re-ranked so first-hand candidate discussion (reddit / glassdoor / blind / levels.fyi / HN) leads. A desktop UA is sent for these requests only — the endpoint returns an empty page to bot UAs; the use is read-only. Degrades to an empty result set (never fatal). |
 | DB | MongoDB via Mongoose | Per the preferred stack. Kit is a document; fits the nested Appendix A shape directly. |
 | LLM output contract | `responseMimeType: application/json` + our own Zod validate & repair (no `responseSchema`) | Gemini's `responseSchema` supports only an OpenAPI subset and couples every prompt to a converter. Validating ourselves with one corrective retry is more robust and keeps the schema single-sourced. |

@@ -1,7 +1,20 @@
 import type { CoreConfig } from "../config/index.js";
 import type { Kit } from "../schema/kit.js";
-import type { Retrieval, SkippedSource } from "../retrieval/index.js";
+import type { Retrieval, SearchResult, SkippedSource } from "../retrieval/index.js";
+import type { HiringProcess } from "../generation/hiring-process.js";
 import type { LlmCallLog, LlmClientLike } from "../generation/llm/index.js";
+
+/**
+ * Everything the pipeline retrieved/derived, kept so a single section can be
+ * regenerated later without re-crawling the whole site.
+ */
+export interface ResearchSnapshot {
+  companyName: string;
+  roleTitle: string;
+  pages: { url: string; title: string; description: string; text: string }[];
+  discussion: SearchResult[];
+  hiring: HiringProcess;
+}
 
 export interface PipelineInput {
   jd: string;
@@ -59,6 +72,7 @@ export interface PipelineOutcome {
   skipped: SkippedSource[];
   llmCalls: LlmCallLog[];
   coveragePasses: number;
+  research: ResearchSnapshot;
 }
 
 /** Thrown only when no kit could be produced at all (Appendix B `failed`). */

@@ -306,6 +306,18 @@ export async function runPipeline(
     skipped,
     llmCalls: llm.log,
     coveragePasses,
+    research: {
+      companyName,
+      roleTitle: ctx.roleTitle,
+      pages: dedupePages(crawlPages).map((p) => ({
+        url: p.url,
+        title: p.title,
+        description: p.description,
+        text: p.text,
+      })),
+      discussion,
+      hiring,
+    },
   };
 }
 
@@ -380,8 +392,14 @@ async function guardLlm<T>(step: PipelineStep, fn: () => Promise<T>): Promise<T>
   }
 }
 
+/**
+ * Only a bad/absent API key is fatal to the whole run. A rate-limit that
+ * survives every retry fails just the current step; whether that sinks the kit
+ * depends on the step (a failed requirement extraction leaves nothing to build;
+ * a failed question category only degrades coverage).
+ */
 function fatalLlm(err: unknown): boolean {
-  return err instanceof LlmError && (err.code === "AUTH" || err.code === "RATE_LIMITED");
+  return err instanceof LlmError && err.code === "AUTH";
 }
 
 function toPipelineError(err: unknown, step?: PipelineStep): PipelineError {

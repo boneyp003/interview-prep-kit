@@ -36,6 +36,7 @@ async function main(): Promise<void> {
     caseTimeoutMs: args.caseTimeoutMs,
     allowPrivateAddresses: !args.blockPrivate,
     onLog: log,
+    verbose: args.verbose,
   });
 
   await mkdir(dirname(resolve(args.output)), { recursive: true });
@@ -52,6 +53,7 @@ interface CliArgs {
   concurrency: number;
   caseTimeoutMs: number;
   blockPrivate: boolean;
+  verbose: boolean;
   envPath?: string;
 }
 
@@ -81,6 +83,7 @@ function parseCli(): CliArgs {
     concurrency,
     caseTimeoutMs: caseTimeout * 1000,
     blockPrivate: values["block-private"] ?? false,
+    verbose: values.verbose ?? false,
     ...(values["env-path"] ? { envPath: values["env-path"] } : {}),
   };
 }
@@ -95,6 +98,7 @@ function safeParseArgs() {
         "case-timeout": { type: "string" },
         "block-private": { type: "boolean", default: false },
         "env-path": { type: "string" },
+        verbose: { type: "boolean", short: "v", default: false },
         help: { type: "boolean", default: false },
       },
       allowPositionals: false,

@@ -23,4 +23,20 @@ export { createLlm, LlmClient, LlmError } from "./generation/llm/index.js";
 export { checkCoverage } from "./coverage/index.js";
 export { buildSchedule } from "./scheduling/index.js";
 export * from "./builder/state.js";
+export {
+  regenerateBrief,
+  regenerateSchedule,
+  regenerateCategory,
+  recomputeDayMinutes,
+  type RegenerateCategoryResult,
+} from "./builder/regenerate.js";
 export { IdAllocator } from "./util/ids.js";
+export { categoriesForRequirement } from "./generation/question-plan.js";
+export { generateCompanyBrief } from "./generation/company-brief.js";
+export {
+  generateQuestionsForCategory,
+  generateQuestionsForRequirement,
+  type GenerationContext,
+} from "./generation/questions.js";
+export { generateFlashcards } from "./generation/flashcards.js";
+export { analyseHiringProcess, type HiringProcess } from "./generation/hiring-process.js";

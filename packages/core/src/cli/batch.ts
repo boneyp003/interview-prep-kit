@@ -27,6 +27,8 @@ export interface BatchOptions {
   /** Off in production; on for local-fixture eval runs. */
   allowPrivateAddresses?: boolean;
   onLog?: (message: string) => void;
+  /** Emit each pipeline step as it happens (per case). */
+  verbose?: boolean;
   /** Injected for tests. */
   llm?: LlmClientLike;
   retrieval?: Retrieval;
@@ -51,7 +53,19 @@ export async function runBatch(cases: CaseInput[], options: BatchOptions): Promi
       const outcome = await withTimeout(
         runPipeline(
           { jd: input.jd, companyUrl: input.company_url, days: input.days },
-          { config: options.config, llm, retrieval, allowPrivateAddresses: allowPrivate, now },
+          {
+            config: options.config,
+            llm,
+            retrieval,
+            allowPrivateAddresses: allowPrivate,
+            now,
+            ...(options.verbose
+              ? {
+                  onProgress: (e) =>
+                    log(`  ${input.id} · ${e.step} ${e.status}${e.detail ? ` — ${e.detail}` : ""}`),
+                }
+              : {}),
+          },
         ),
         caseTimeoutMs,
         `case exceeded ${Math.round(caseTimeoutMs / 1000)}s`,

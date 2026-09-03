@@ -19,6 +19,7 @@ export class LlmBudget {
   private readonly windowMs = 60_000;
   private history: Spend[] = [];
   private chain: Promise<void> = Promise.resolve();
+  private penaltyUntil = 0;
 
   constructor(
     private readonly rpm: number,
@@ -47,8 +48,21 @@ export class LlmBudget {
     };
   }
 
+  /**
+   * Register upstream pushback (a 429). Every subsequent acquire waits until the
+   * penalty clears, so the whole run — including other concurrent kits sharing
+   * this budget — slows down together.
+   */
+  penalize(ms: number): void {
+    this.penaltyUntil = Math.max(this.penaltyUntil, Date.now() + ms);
+  }
+
   private async waitForSlot(estimatedTokens: number): Promise<void> {
     for (;;) {
+      if (this.penaltyUntil > Date.now()) {
+        await delay(this.penaltyUntil - Date.now() + 50);
+        continue;
+      }
       this.prune();
       const requests = this.history.length;
       const tokens = this.history.reduce((sum, s) => sum + s.tokens, 0);

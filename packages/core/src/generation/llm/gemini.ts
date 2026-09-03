@@ -35,6 +35,11 @@ export async function callGemini(
     generationConfig: {
       temperature: req.temperature,
       maxOutputTokens: req.maxOutputTokens,
+      // Disable "thinking": these are structured extraction/generation calls, and
+      // thinking tokens both count against the free-tier TPM budget and can
+      // exhaust maxOutputTokens before any JSON is produced. Newer flash models
+      // ignore an unknown field here, so this is safe across versions.
+      thinkingConfig: { thinkingBudget: 0 },
       ...(req.json ? { responseMimeType: "application/json" } : {}),
     },
   };
