@@ -1,0 +1,27 @@
+{
+  "name": "interview-prep-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turns a job description into a personalised interview preparation kit",
+  "workspaces": [
+    "packages/core",
+    "packages/api",
+    "packages/web"
+  ],
+  "scripts": {
+    "evaluate": "npm run -w @ipk/core evaluate --",
+    "dev": "npm-run-all --parallel dev:api dev:web",
+    "dev:api": "npm run -w @ipk/api dev",
+    "dev:web": "npm run -w @ipk/web dev",
+    "test": "npm run -w @ipk/core test",
+    "typecheck": "npm run -w @ipk/core typecheck && npm run -w @ipk/api typecheck && npm run -w @ipk/web typecheck",
+    "build": "npm run -w @ipk/core build && npm run -w @ipk/api build && npm run -w @ipk/web build"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
