@@ -341,6 +341,18 @@ reserved for cases where no kit could be produced at all.
   same call with the same instructions" while keeping the call count viable on
   a free tier. The coverage second pass *is* per-requirement.
 
-## Creativity feature
+## Creativity feature — the "weak spots" report
 
-_(none added — the core scope was the focus.)_
+`GET /kits/:id/weak-spots`, shown as a collapsible panel on the kit page.
+
+**Problem it solves:** a finished kit has ~25 questions and ~15 flashcards
+spread over a week. The candidate's real question is *where should the next hour
+go?* — and neither the raw question bank nor the schedule answers that.
+
+The report is deterministic (`core/src/insights/weak-spots.ts`). Per
+requirement it combines three signals the app already tracks — how many
+questions target it, the average confidence of practice ratings on its
+flashcards, and where it sits in the schedule — into one weakness score, with
+must-haves weighted heavier, and lists the reasons ("only one question covers
+this", "flashcards not practised yet", "low practice confidence (avg 2.0/5)").
+It updates as you practise, so it doubles as a progress signal.
