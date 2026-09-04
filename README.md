@@ -342,6 +342,21 @@ A real `npm run evaluate` run (model `gemini-flash-lite-latest`, live web):
 - **2-case batch** (`posthog.com` 5-day + `gitlab.com` 3-day) → both `ok` in
   81 s, Appendix B valid, per-case day counts respected; GitLab's 7 unreachable
   crawl targets were recorded as skipped sources, not a failure.
+- **`seatgeek.com`, deployed app** → SeatGeek sits behind DataDome bot
+  protection and returns `403` with a JS/CAPTCHA challenge for *every* request,
+  including `robots.txt` itself, regardless of crawler. The pipeline produced
+  an honest, non-fabricated company brief ("could not be researched... treat
+  this brief as incomplete") instead of failing or inventing one, while the
+  role, requirements, question bank, and flashcards — all driven from the
+  pasted job description, independent of the crawl — generated normally and
+  the kit still shipped `ready`. No attempt was made to defeat the CAPTCHA;
+  a site that actively blocks bots is exactly the case Section 10 asks the
+  app to degrade honestly on, not work around.
+- **Deployed and exercised live**: Vercel (web) → Render (API) → MongoDB
+  Atlas, three separate free-tier hosts. Confirmed `/health` on both, a real
+  register writing to Atlas, and the `/api/*` Next rewrite proxying to the
+  Render API in production exactly as it does in local dev (see
+  [DEPLOY.md](DEPLOY.md)).
 
 ## Notes / trade-offs
 
