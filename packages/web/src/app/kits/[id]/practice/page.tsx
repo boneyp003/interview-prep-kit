@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRequireAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
@@ -29,8 +29,9 @@ const RATINGS = [
   { value: 5, label: "Easy" },
 ];
 
-export default function PracticePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+// Next 14's App Router passes `params` as a plain object, not a Promise.
+export default function PracticePage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const { loading: authLoading, user } = useRequireAuth();
   const [cards, setCards] = useState<SessionCard[] | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);

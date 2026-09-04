@@ -106,6 +106,26 @@ test("the generated kit becomes readable and carries its builder overlay", async
   assert.equal(got.body.kit.itemState.q1.origin, "generated");
 });
 
+test("retry is refused once a kit is ready — a full regeneration would discard edits", async () => {
+  const agent = request.agent(app);
+  await register(agent);
+  const created = await agent.post("/kits").send({ jd: "Engineer", companyUrl: "https://acme.example/", days: 3 });
+  const id = created.body.kit.id;
+
+  // Hand-edit a question so it would be lost by a full regeneration.
+  await agent.patch(`/kits/${id}/questions/q1`).send({ prompt: "My hand-written question" });
+
+  const retry = await agent.post(`/kits/${id}/retry`);
+  assert.equal(retry.status, 409);
+
+  const still = await agent.get(`/kits/${id}`);
+  assert.equal(still.body.kit.status, "ready");
+  assert.equal(
+    still.body.kit.kit.questions.find((q: { id: string }) => q.id === "q1").prompt,
+    "My hand-written question",
+  );
+});
+
 test("logout clears the session", async () => {
   const agent = request.agent(app);
   await register(agent);

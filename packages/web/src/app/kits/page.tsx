@@ -121,8 +121,15 @@ function KitRow({ kit, onChange }: { kit: KitSummary; onChange: () => void }) {
         )}
       </div>
       <div className="flex shrink-0 items-center gap-2">
-        {inFlight && <Spinner label="Generating…" />}
-        {kit.status === "ready" && (
+        {inFlight && (
+          <>
+            <Spinner label="Generating…" />
+            <Link href={`/kits/${kit.id}`}>
+              <Button variant="ghost">View progress</Button>
+            </Link>
+          </>
+        )}
+        {(kit.status === "ready" || kit.status === "failed") && (
           <Link href={`/kits/${kit.id}`}>
             <Button variant="ghost">Open</Button>
           </Link>

@@ -91,10 +91,23 @@ export async function deleteKit(userId: string, kitId: string): Promise<void> {
   await doc.deleteOne();
 }
 
+/**
+ * Re-run full generation after a failure. Deliberately restricted to
+ * `status === "failed"` — a `ready` kit may carry hand-edits (itemState,
+ * pinned/edited items, a hand-edited schedule), and a full regeneration
+ * discards all of that. That is exactly the "triggered twice" failure mode
+ * Section 13 warns about, so this is not merely a running/queued guard: a
+ * ready kit is retried by deleting it and creating a fresh one, never by
+ * calling retry on it in place.
+ */
 export async function retryKit(userId: string, kitId: string, core: CoreConfig): Promise<KitDoc> {
   const doc = await getOwnedKit(userId, kitId);
-  if (doc.status === "running" || doc.status === "queued") {
-    throw AppError.conflict("This kit is already generating");
+  if (doc.status !== "failed") {
+    throw AppError.conflict(
+      doc.status === "ready"
+        ? "This kit already has a result. Delete it and create a new one to regenerate from scratch."
+        : "This kit is already generating",
+    );
   }
   doc.status = "queued";
   doc.error = null;

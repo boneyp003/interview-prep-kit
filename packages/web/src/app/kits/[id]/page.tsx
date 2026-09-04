@@ -1,6 +1,5 @@
 "use client";
 
-import { use } from "react";
 import Link from "next/link";
 import { useRequireAuth } from "@/lib/auth";
 import { useKit } from "@/lib/useKit";
@@ -10,8 +9,10 @@ import { GenerationProgress } from "@/components/GenerationProgress";
 import { KitBuilder } from "@/components/KitBuilder";
 import { WeakSpots } from "@/components/WeakSpots";
 
-export default function KitPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+// Next 14's App Router passes `params` as a plain object, not a Promise
+// (that's a Next 15 change) — keep this in sync with the installed version.
+export default function KitPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const { loading: authLoading, user } = useRequireAuth();
   const { kit, loading, error, progress, mutate, reload } = useKit(id);
 
