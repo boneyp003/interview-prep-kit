@@ -7,6 +7,17 @@ schedule.
 
 > Submitted solely for technical evaluation — see [NOTICE](NOTICE) for terms.
 
+**Live deployment:** [interview-prep-kit-web.vercel.app](https://interview-prep-kit-web.vercel.app)
+(frontend, Vercel) · [interview-prep-kit.onrender.com](https://interview-prep-kit.onrender.com/health)
+(backend, Render) · MongoDB Atlas. Full setup steps for redeploying it yourself
+are in [DEPLOY.md](DEPLOY.md). Render's free tier spins down after 15 minutes
+idle — the first request after a while cold-starts in ~30–50s.
+
+**Tech stack:** TypeScript throughout · Next.js + Tailwind (frontend) ·
+Node.js + Express (backend) · MongoDB (persistence) · Google Gemini (LLM) ·
+Cheerio + a hand-rolled crawler (retrieval) — see [Key decisions](#key-decisions)
+below for what differs from the brief's suggested stack and why.
+
 ---
 
 ## Quick start
