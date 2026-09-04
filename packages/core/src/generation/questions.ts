@@ -5,6 +5,7 @@ import type { HiringProcess } from "./hiring-process.js";
 import type { CategoryPlan, PlannedItem } from "./question-plan.js";
 import type { LlmClientLike } from "./llm/index.js";
 import { UNTRUSTED_CONTENT_SYSTEM_CLAUSE } from "./prompts/untrusted.js";
+import { isPostingFramed } from "./content-guard.js";
 
 export interface GenerationContext {
   companyName: string;
@@ -142,6 +143,11 @@ function materialise(
   for (const q of raw) {
     const item = byId.get(q.requirement_id);
     if (!item) continue; // model referenced a requirement not in this plan -> drop
+    // company-fit questions are supposed to reference the role/company by
+    // design ("why do you want to work here"); the posting-framing guard is
+    // about quizzing the *eligibility line itself*, which only applies to the
+    // other categories.
+    if (category !== "company-fit" && isPostingFramed([q.prompt, q.answer_outline])) continue;
     const difficulty = clamp(
       Math.round(q.difficulty),
       item.difficultyFloor,
