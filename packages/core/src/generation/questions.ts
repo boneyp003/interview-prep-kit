@@ -38,6 +38,13 @@ function systemFor(category: QuestionCategory): string {
   return [
     `You write ${category} interview questions for a candidate preparing for a specific role.`,
     CATEGORY_GUIDANCE[category],
+    "The requirement text is a screening line from a job posting (e.g. a degree",
+    "or years-of-experience threshold), not the subject to interview on. Write",
+    "about the knowledge or skill it implies, never a question whose answer is a",
+    'paraphrase of the posting\'s own wording (bad: "What degree does this role',
+    'require?"). If a requirement names no inferable skill (visa status, pure',
+    "years-of-experience with nothing attached), skip it rather than asking",
+    "about the eligibility line itself.",
     UNTRUSTED_CONTENT_SYSTEM_CLAUSE,
     "Every question must target exactly one of the provided requirement ids. Do not invent requirements. Do not produce questions for skills that are not listed.",
   ].join("\n");
