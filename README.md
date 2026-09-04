@@ -5,6 +5,8 @@ structured, editable, practisable interview-preparation kit: a company brief, a
 role breakdown, a categorised question bank, flashcards, and a day-by-day study
 schedule.
 
+> Submitted solely for technical evaluation — see [NOTICE](NOTICE) for terms.
+
 ---
 
 ## Quick start
