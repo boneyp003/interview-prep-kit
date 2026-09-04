@@ -20,7 +20,9 @@ function required(name: string, value: string | undefined): string {
 export function loadApiConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
   const isProduction = env.NODE_ENV === "production";
   return {
-    port: Number(env.API_PORT ?? 4000),
+    // Most free hosts (Render, Railway, Heroku-style) inject PORT and require
+    // the app to bind to it; API_PORT is the override for local/manual setups.
+    port: Number(env.PORT ?? env.API_PORT ?? 4000),
     webOrigin: (env.WEB_ORIGIN ?? "http://localhost:3000").split(",").map((s) => s.trim()),
     authSecret: isProduction
       ? required("AUTH_SECRET", env.AUTH_SECRET)
